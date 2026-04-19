@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notion Templates — The Widget Studio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">The Widget Studio</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="templates.html" class="active">Notion Templates</a></li>
+      <li><a href="widgets.html">Notion Widgets</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="menu">☰</button>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-eyebrow">Collection</p>
+      <h1 class="page-title">Notion Templates</h1>
+      <p class="page-sub">Ready-to-duplicate systems designed to bring structure and serenity to your life.</p>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="container filter-inner">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="free">Free</button>
+      <button class="filter-btn" data-filter="paid">Paid</button>
+      <button class="filter-btn" data-filter="planner">Planners</button>
+      <button class="filter-btn" data-filter="journal">Journals</button>
+      <button class="filter-btn" data-filter="dashboard">Dashboards</button>
+    </div>
+  </div>
+
+  <section class="shop-section section">
+    <div class="container">
+      <div class="product-grid large" id="template-grid">
+
+        <div class="product-card" data-tags="paid dashboard">
+          <div class="product-thumb tall-thumb" style="background:linear-gradient(135deg,#e8ddd0 60%,#d9cfc4 100%);">
+            <div class="thumb-inner" style="flex-direction:column;gap:8px;align-items:flex-start;padding:18px;">
+              <span style="font-family:'Jost',sans-serif;font-size:0.55rem;letter-spacing:0.12em;color:#8b6f52;text-transform:uppercase;">My Life OS</span>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:100%;">
+                <div style="height:36px;background:#c4b49a55;border-radius:4px;"></div>
+                <div style="height:36px;background:#c4b49a55;border-radius:4px;"></div>
+                <div style="height:24px;background:#c4b49a33;border-radius:4px;grid-column:span 2;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge paid">$12</span><span class="badge-cat">Dashboard</span></div>
+            <h4>Life OS Dashboard</h4>
+            <p>An all-in-one home base: goals, habits, tasks, notes, and more — beautifully organized.</p>
+            <div class="product-actions">
+              <span class="product-price">$12</span>
+              <a href="#" class="btn btn-sm btn-primary">Buy</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="free journal">
+          <div class="product-thumb tall-thumb" style="background:#ede6dd;">
+            <div class="thumb-inner" style="flex-direction:column;gap:6px;padding:18px;align-items:flex-start;">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:#6b5744;font-style:italic;">Daily Journal</span>
+              <div style="width:100%;height:2px;background:#c4b49a44;"></div>
+              <span style="font-family:'Jost',sans-serif;font-size:0.55rem;color:#a08878;letter-spacing:0.06em;">Today I'm grateful for...</span>
+              <div style="width:80%;height:1px;background:#c4b49a33;"></div>
+              <div style="width:60%;height:1px;background:#c4b49a33;"></div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Journal</span></div>
+            <h4>Minimal Daily Journal</h4>
+            <p>A calm space for morning reflections, gratitude, and intentions. Simple and soft.</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="paid planner">
+          <div class="product-thumb tall-thumb" style="background:#e2d8cc;">
+            <div class="thumb-inner" style="flex-direction:column;gap:6px;padding:18px;align-items:flex-start;">
+              <span style="font-family:'Jost',sans-serif;font-size:0.55rem;letter-spacing:0.12em;color:#8b6f52;text-transform:uppercase;">Weekly Planner</span>
+              <div style="display:flex;gap:3px;">
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                  <div style="width:22px;height:22px;background:#c4b49a55;border-radius:3px;font-size:0.45rem;display:flex;align-items:center;justify-content:center;color:#8b6f52;font-family:'Jost',sans-serif;">M</div>
+                  <div style="width:22px;height:14px;background:#c4b49a33;border-radius:2px;"></div>
+                  <div style="width:22px;height:10px;background:#c4b49a22;border-radius:2px;"></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                  <div style="width:22px;height:22px;background:#c4b49a55;border-radius:3px;font-size:0.45rem;display:flex;align-items:center;justify-content:center;color:#8b6f52;font-family:'Jost',sans-serif;">T</div>
+                  <div style="width:22px;height:18px;background:#c4b49a33;border-radius:2px;"></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                  <div style="width:22px;height:22px;background:#c4b49a55;border-radius:3px;font-size:0.45rem;display:flex;align-items:center;justify-content:center;color:#8b6f52;font-family:'Jost',sans-serif;">W</div>
+                  <div style="width:22px;height:10px;background:#8b6f5244;border-radius:2px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge paid">$8</span><span class="badge-cat">Planner</span></div>
+            <h4>Weekly Planner Template</h4>
+            <p>Plan your week at a glance. Priorities, time blocks, and a weekly reset ritual.</p>
+            <div class="product-actions">
+              <span class="product-price">$8</span>
+              <a href="#" class="btn btn-sm btn-primary">Buy</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="paid journal">
+          <div class="product-thumb tall-thumb" style="background:#ede6dd;">
+            <div class="thumb-inner" style="flex-direction:column;padding:18px;align-items:flex-start;gap:8px;">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:#6b5744;font-style:italic;">Reading Journal</span>
+              <div style="width:100%;height:2px;background:#c4b49a33;"></div>
+              <div style="display:flex;gap:4px;align-items:center;">
+                <div style="width:18px;height:24px;background:#8b6f5255;border-radius:2px;"></div>
+                <div style="width:18px;height:24px;background:#c4b49a44;border-radius:2px;"></div>
+                <div style="width:18px;height:24px;background:#c4b49a33;border-radius:2px;"></div>
+              </div>
+              <span style="font-family:'Jost',sans-serif;font-size:0.5rem;color:#a08878;letter-spacing:0.06em;">3 books in progress</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge paid">$6</span><span class="badge-cat">Journal</span></div>
+            <h4>Reading Tracker & Journal</h4>
+            <p>Log your books, track progress, write reflections, and see your reading history grow.</p>
+            <div class="product-actions">
+              <span class="product-price">$6</span>
+              <a href="#" class="btn btn-sm btn-primary">Buy</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="free dashboard">
+          <div class="product-thumb tall-thumb" style="background:#d9cfc4;">
+            <div class="thumb-inner" style="flex-direction:column;padding:18px;align-items:flex-start;gap:6px;">
+              <span style="font-family:'Jost',sans-serif;font-size:0.55rem;letter-spacing:0.12em;color:#8b6f52;text-transform:uppercase;">Morning Dashboard</span>
+              <div style="width:100%;height:1px;background:#c4b49a44;"></div>
+              <div style="display:flex;flex-direction:column;gap:3px;width:100%;">
+                <div style="width:100%;height:8px;background:#c4b49a55;border-radius:2px;"></div>
+                <div style="width:70%;height:8px;background:#c4b49a33;border-radius:2px;"></div>
+                <div style="width:85%;height:8px;background:#c4b49a44;border-radius:2px;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Dashboard</span></div>
+            <h4>Morning Dashboard</h4>
+            <p>Start every day right. Today's tasks, a quote widget, habit checks, and your daily intention.</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="paid planner">
+          <div class="product-thumb tall-thumb" style="background:#e8ddd0;">
+            <div class="thumb-inner" style="flex-direction:column;padding:18px;align-items:flex-start;gap:8px;">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:#6b5744;font-style:italic;">Year in Review</span>
+              <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:2px;width:100%;">
+                ${Array.from({length:12},(_,i)=>`<div style="height:14px;background:#c4b49a${i<7?'88':'33'};border-radius:2px;"></div>`).join('')}
+              </div>
+              <span style="font-family:'Jost',sans-serif;font-size:0.5rem;color:#a08878;letter-spacing:0.06em;">7 of 12 months complete</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge paid">$9</span><span class="badge-cat">Planner</span></div>
+            <h4>Annual Review Template</h4>
+            <p>Reflect on the year, celebrate wins, review goals, and set intentions for what's next.</p>
+            <div class="product-actions">
+              <span class="product-price">$9</span>
+              <a href="#" class="btn btn-sm btn-primary">Buy</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section section">
+    <div class="container cta-inner">
+      <h2>Want to add some extra magic?</h2>
+      <p>Pair your template with one of our widgets for a fully customized workspace.</p>
+      <a href="widgets.html" class="btn btn-primary">Browse Widgets →</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-logo">The Widget Studio</span>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="templates.html">Templates</a>
+        <a href="widgets.html">Widgets</a>
+      </nav>
+      <span class="footer-copy">© 2026 The Widget Studio</span>
+    </div>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    const btns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('#template-grid .product-card');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        cards.forEach(c => {
+          const tags = c.dataset.tags || '';
+          c.style.display = (f === 'all' || tags.includes(f)) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
