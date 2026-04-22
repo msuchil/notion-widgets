@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Cloverleaf Calc Pro</title>
+<title>Elorah Calc Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -521,8 +521,8 @@ body{
     <div class="sp-div"></div>
     <div class="sp-lbl">Size</div>
     <div class="sp-size-row">
-      <button class="sp-size-btn on" data-sz="large">L<span class="sp-size-sub">large</span></button>
-      <button class="sp-size-btn"    data-sz="medium">M<span class="sp-size-sub">medium</span></button>
+      <button class="sp-size-btn"    data-sz="large">L<span class="sp-size-sub">large</span></button>
+      <button class="sp-size-btn on" data-sz="medium">M<span class="sp-size-sub">medium</span></button>
       <button class="sp-size-btn"    data-sz="small">S<span class="sp-size-sub">small</span></button>
     </div>
   </div>
@@ -823,7 +823,7 @@ function applySize(key){
 }
 
 /* Init at large */
-applySize('large');
+applySize('medium');
 
 document.querySelectorAll('.sp-size-btn').forEach(btn=>{
   btn.addEventListener('click', e=>{
