@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cloverleaf Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── THEMES ── */
+  :root {
+    --calc-shell: #ffffff;
+    --calc-shell-shadow: #e0d0d8;
+    --display-bg: #fff5fb;
+    --display-text: #3a4a3a;
+    --display-border: #dbc3d3;
+    --key-base: #f2c4c4;
+    --key-top: #f7d8d8;
+    --key-shadow: #c89898;
+    --key-text: #7a4a4a;
+    --key-light: #fde8e8;
+    --op-base: #e8a8a8;
+    --op-top: #f2bebe;
+    --op-shadow: #b87878;
+    --op-text: #5a2828;
+    --eq-base: #d47878;
+    --eq-top: #e09090;
+    --eq-shadow: #a45050;
+    --eq-text: #fff;
+    --special-base: #eed8d8;
+    --special-top: #f5e4e4;
+    --special-shadow: #c8a8a8;
+    --special-text: #7a5050;
+    --screw: #e8c8c8;
+    --brand: #c89898;
+  }
+  [data-theme="lavender"] {
+    --calc-shell: #ffffff; --calc-shell-shadow: #d8d0e8;
+    --display-bg: #eae8f5; --display-text: #3a2a5a; --display-border: #c8c0e0;
+    --key-top: #d8cef7; --key-shadow: #9888c8; --key-text: #3a2870; --key-light: #eeeaff;
+    --op-top: #bcaeed; --op-shadow: #7860b0; --op-text: #1e0f50;
+    --eq-top: #9080d8; --eq-shadow: #5048a0; --eq-text: #fff;
+    --special-top: #eae2ff; --special-shadow: #b0a0d8; --special-text: #4a3870;
+    --screw: #c8b8e8; --brand: #9880c8;
+  }
+  [data-theme="sage"] {
+    --calc-shell: #ffffff; --calc-shell-shadow: #c8e0d4;
+    --display-bg: #e8f2e4; --display-text: #1a3a28; --display-border: #b0d4c0;
+    --key-top: #b9dda4; --key-shadow: #78a888; --key-text: #1a4a2e; --key-light: #e9fff2;
+    --op-top: #97bd7e; --op-shadow: #489868; --op-text: #0a2e1a;
+    --eq-top: #6da746; --eq-shadow: #207020; --eq-text: #fff;
+    --special-top: #d5ebbe; --special-shadow: #90c0a8; --special-text: #1a4030;
+    --screw: #a8d8bc; --brand: #78a888;
+  }
+  [data-theme="sky"] {
+    --calc-shell: #ffffff; --calc-shell-shadow: #c0d8ee;
+    --display-bg: #e8f2fa; --display-text: #1a2e4a; --display-border: #a8c8e8;
+    --key-top: #c4deff; --key-shadow: #6898c8; --key-text: #0e2848; --key-light: #ddeeff;
+    --op-top: #80aee8; --op-shadow: #3868a8; --op-text: #041830;
+    --eq-top: #3f87df; --eq-shadow: #104888; --eq-text: #fff;
+    --special-top: #e0f0fd; --special-shadow: #88b0d8; --special-text: #0e2848;
+    --screw: #a8c8e8; --brand: #5888c0;
+  }
+  [data-theme="peach"] {
+    --calc-shell: #ffffff; --calc-shell-shadow: #e8d4c0;
+    --display-bg: #f8f0e4; --display-text: #4a2e10; --display-border: #e0c4a0;
+    --key-top: #f0d5b7; --key-shadow: #c89060; --key-text: #4a2808; --key-light: #fffbe4;
+    --op-top: #f3c890; --op-shadow: #b07030; --op-text: #3a1800;
+    --eq-top: #e09f6a; --eq-shadow: #b15814; --eq-text: #fff;
+    --special-top: #f8e0c1; --special-shadow: #d1ac80; --special-text: #4a2808;
+    --screw: #e8c898; --brand: #c09060;
+  }
+  [data-theme="mono"] {
+    --calc-shell: #ffffff; --calc-shell-shadow: #c0c0c0;
+    --display-bg: #111111; --display-text: #f0f0f0; --display-border: #333333;
+    --key-top: #f5f5f5; --key-shadow: #a0a0a0; --key-text: #111111; --key-light: #ffffff;
+    --op-top: #6e6e6e; --op-shadow: #2a2a2a; --op-text: #ffffff;
+    --eq-top: #2a2a2a; --eq-shadow: #000000; --eq-text: #ffffff;
+    --special-top: #dedede; --special-shadow: #888888; --special-text: #222222;
+    --screw: #cccccc; --brand: #888888;
+  }
+
+  /* ── LAYOUT ── */
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    transition: background 0.4s;
+  }
+
+  /* ── SIZE SCALING ── 
+     We scale the whole calculator with a CSS transform.
+     The .calc-sizer wrapper keeps the layout footprint correct. */
+  .calc-sizer {
+    /* default = medium (scale 1) */
+    --scale: 1;
+    transform: scale(var(--scale));
+    transform-origin: center center;
+    /* Shrink the layout box so body centering stays correct */
+    width: calc(320px * var(--scale));
+    height: calc(var(--calc-natural-h, 520px) * var(--scale));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width 0.3s, height 0.3s;
+    position: relative;
+  }
+
+  /* ── CALCULATOR SHELL ── */
+  .calc {
+    background: var(--calc-shell);
+    border-radius: 28px;
+    padding: 24px 22px 28px;
+    box-shadow:
+      0 8px 0 var(--calc-shell-shadow),
+      0 12px 40px rgba(0,0,0,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    width: 320px;
+    position: relative;
+    transition: background 0.4s, box-shadow 0.4s;
+  }
+
+  /* ── SCREWS ── */
+  .screws { display:flex; justify-content:space-between; padding:0 4px; margin-bottom:10px; }
+  .screw {
+    width:10px; height:10px; border-radius:50%;
+    background:var(--screw);
+    box-shadow:inset 1px 1px 2px rgba(0,0,0,0.15),inset -1px -1px 1px rgba(255,255,255,0.6);
+    position:relative;
+  }
+  .screw::after {
+    content:''; position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%) rotate(45deg);
+    width:6px; height:1px;
+    background:rgba(0,0,0,0.15);
+  }
+
+  /* ── DISPLAY ── */
+  .display-wrap {
+    background:var(--display-bg);
+    border-radius:14px;
+    border:1.5px solid var(--display-border);
+    padding:10px 16px 12px;
+    margin-bottom:20px;
+    min-height:80px;
+    display:flex; flex-direction:column;
+    align-items:flex-end; justify-content:flex-end;
+    transition:background 0.4s,border-color 0.4s;
+    box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);
+    position:relative;
+  }
+  .display-label {
+    position:absolute; top:8px; left:12px;
+    font-size:9px; letter-spacing:3px;
+    color:var(--brand); text-transform:uppercase;
+    opacity:0.7; transition:color 0.4s;
+  }
+  .display-expr {
+    font-size:12px; color:var(--display-text);
+    opacity:0.5; min-height:16px;
+    text-align:right; width:100%;
+    transition:color 0.4s; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap;
+  }
+  .display-main {
+    font-size:36px; font-weight:700;
+    color:var(--display-text);
+    letter-spacing:2px; text-align:right;
+    width:100%; word-break:break-all;
+    line-height:1.1; transition:color 0.4s;
+  }
+
+  /* ── KEYS ── */
+  .keys {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .key {
+    position:relative; border:none; background:none;
+    cursor:pointer; outline:none; padding:0;
+    aspect-ratio:1; border-radius:50%;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .key.wide { grid-column:span 2; aspect-ratio:2.25/1; border-radius:100px; }
+  .key-inner {
+    width:100%; height:100%; border-radius:inherit;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Nunito',sans-serif; font-size:17px; font-weight:600;
+    background:var(--key-top); color:var(--key-text);
+    box-shadow:0 5px 0 var(--key-shadow),0 7px 14px rgba(0,0,0,0.1),inset 0 1px 0 var(--key-light),inset 0 -1px 0 rgba(0,0,0,0.04);
+    transition:transform 0.08s,box-shadow 0.08s,background 0.4s,color 0.4s;
+    position:relative; overflow:hidden;
+  }
+  .key-inner::before {
+    content:''; position:absolute; top:8%; left:15%;
+    width:45%; height:30%; border-radius:50%;
+    background:rgba(255,255,255,0.35); pointer-events:none;
+  }
+  .key:active .key-inner, .key.pressed .key-inner {
+    transform:translateY(4px);
+    box-shadow:0 1px 0 var(--key-shadow),0 2px 6px rgba(0,0,0,0.08),inset 0 1px 0 var(--key-light),inset 0 -1px 0 rgba(0,0,0,0.04);
+  }
+  .key.op .key-inner {
+    background:var(--op-top); color:var(--op-text);
+    box-shadow:0 5px 0 var(--op-shadow),0 7px 14px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.5),inset 0 -1px 0 rgba(0,0,0,0.05);
+  }
+  .key.op:active .key-inner, .key.op.pressed .key-inner {
+    transform:translateY(4px);
+    box-shadow:0 1px 0 var(--op-shadow),0 2px 6px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .key.eq .key-inner {
+    background:var(--eq-top); color:var(--eq-text); font-size:22px;
+    box-shadow:0 5px 0 var(--eq-shadow),0 7px 14px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.4),inset 0 -1px 0 rgba(0,0,0,0.08);
+  }
+  .key.eq:active .key-inner, .key.eq.pressed .key-inner {
+    transform:translateY(4px);
+    box-shadow:0 1px 0 var(--eq-shadow),0 2px 6px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  .key.special .key-inner {
+    background:var(--special-top); color:var(--special-text);
+    font-size:13px; letter-spacing:0.5px;
+    box-shadow:0 5px 0 var(--special-shadow),0 7px 14px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.5),inset 0 -1px 0 rgba(0,0,0,0.03);
+  }
+  .key.special:active .key-inner, .key.special.pressed .key-inner {
+    transform:translateY(4px);
+    box-shadow:0 1px 0 var(--special-shadow),0 2px 6px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+
+  /* ── BRAND ── */
+  .brand {
+    text-align:center; font-size:10px; letter-spacing:4px;
+    color:var(--brand); margin-top:16px;
+    text-transform:uppercase; opacity:0.6;
+    transition:color 0.4s;
+  }
+
+  /* ═══════════════════════════════════════
+     GEAR BUTTON
+  ═══════════════════════════════════════ */
+  .gear-btn {
+    position: absolute;
+    bottom: 16px; right: 18px;
+    width: 24px; height: 24px;
+    border: none; background: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.35;
+    transition: opacity 0.2s, transform 0.3s;
+    z-index: 10;
+    padding: 0;
+    color: var(--brand);
+  }
+  .gear-btn:hover { opacity: 0.75; }
+  .gear-btn.open  { opacity: 0.9; transform: rotate(60deg); }
+  .gear-btn svg   { width: 16px; height: 16px; }
+
+  /* ═══════════════════════════════════════
+     SETTINGS PANEL (floating card)
+  ═══════════════════════════════════════ */
+  .settings-panel {
+    position: absolute;
+    bottom: 44px; right: 14px;
+    width: 192px;
+    background: var(--calc-shell);
+    border-radius: 16px;
+    padding: 14px 14px 16px;
+    box-shadow:
+      0 6px 0 var(--calc-shell-shadow),
+      0 10px 32px rgba(0,0,0,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    z-index: 100;
+    /* hidden state */
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.92) translateY(-6px);
+    transform-origin: top right;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .settings-panel.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1) translateY(0);
+  }
+
+  .panel-section-label {
+    font-size: 8px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--brand);
+    opacity: 0.8;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  /* Color swatches */
+  .swatch-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .theme-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .theme-dot:hover { transform: scale(1.2); }
+  .theme-dot.active { border-color: rgba(0,0,0,0.28); }
+
+  /* Divider */
+  .panel-divider {
+    height: 1px;
+    background: var(--display-border);
+    opacity: 0.4;
+    margin: 0 0 12px;
+  }
+
+  /* Size buttons */
+  .size-row {
+    display: flex;
+    gap: 6px;
+  }
+  .size-btn {
+    flex: 1;
+    padding: 6px 2px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background: var(--special-top);
+    color: var(--special-text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+    box-shadow: 0 3px 0 var(--special-shadow);
+  }
+  .size-btn:hover { filter: brightness(1.04); }
+  .size-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--special-shadow); }
+  .size-btn.active {
+    border-color: var(--brand);
+    background: var(--key-top);
+    color: var(--key-text);
+    box-shadow: 0 3px 0 var(--key-shadow);
+  }
+  .size-btn .size-label { font-size: 12px; font-weight: 700; }
+  .size-btn .size-sub   { font-size: 8px; opacity: 0.6; font-weight: 400; }
+</style>
+</head>
+<body>
+
+<div class="calc-sizer" id="sizer">
+  <div class="calc" id="calc">
+
+    <!-- Gear button -->
+    <button class="gear-btn" id="gear-btn" title="Settings" aria-label="Open settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+
+    <!-- Settings panel -->
+    <div class="settings-panel" id="settings-panel">
+      <div class="panel-section-label">Color</div>
+      <div class="swatch-row">
+        <div class="theme-dot active" style="background:linear-gradient(135deg,#f7d8d8,#e8a8a8);" data-theme=""       title="Rose"></div>
+        <div class="theme-dot"        style="background:linear-gradient(135deg,#d8cef7,#a898e0);" data-theme="lavender" title="Lavender"></div>
+        <div class="theme-dot"        style="background:linear-gradient(135deg,#c0e8d0,#78c099);" data-theme="sage"     title="Sage"></div>
+        <div class="theme-dot"        style="background:linear-gradient(135deg,#c0d8f8,#6898d8);" data-theme="sky"      title="Sky"></div>
+        <div class="theme-dot"        style="background:linear-gradient(135deg,#f8dab4,#e0a060);" data-theme="peach"    title="Peach"></div>
+        <div class="theme-dot"        style="background:linear-gradient(135deg,#fff,#888);border:1.5px solid #ccc;" data-theme="mono" title="Mono"></div>
+      </div>
+
+      <div class="panel-divider"></div>
+
+      <div class="panel-section-label">Size</div>
+      <div class="size-row">
+        <button class="size-btn" data-size="xs">
+          <span class="size-label">XS</span>
+          <span class="size-sub">tiny</span>
+        </button>
+        <button class="size-btn" data-size="sm">
+          <span class="size-label">S</span>
+          <span class="size-sub">small</span>
+        </button>
+        <button class="size-btn active" data-size="md">
+          <span class="size-label">M</span>
+          <span class="size-sub">default</span>
+        </button>
+        <button class="size-btn" data-size="lg">
+          <span class="size-label">L</span>
+          <span class="size-sub">large</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Screws -->
+    <div class="screws">
+      <div class="screw"></div>
+      <div class="screw"></div>
+    </div>
+
+    <!-- Display -->
+    <div class="display-wrap">
+      <div class="display-label">calc</div>
+      <div class="display-expr" id="expr"></div>
+      <div class="display-main" id="display">0</div>
+    </div>
+
+    <!-- Keys -->
+    <div class="keys" id="keys">
+      <button class="key special" data-val="AC"><div class="key-inner">AC</div></button>
+      <button class="key special" data-val="CE"><div class="key-inner">CE</div></button>
+      <button class="key special" data-val="%"><div class="key-inner">%</div></button>
+      <button class="key op"      data-val="/"><div class="key-inner">÷</div></button>
+
+      <button class="key" data-val="7"><div class="key-inner">7</div></button>
+      <button class="key" data-val="8"><div class="key-inner">8</div></button>
+      <button class="key" data-val="9"><div class="key-inner">9</div></button>
+      <button class="key op" data-val="*"><div class="key-inner">×</div></button>
+
+      <button class="key" data-val="4"><div class="key-inner">4</div></button>
+      <button class="key" data-val="5"><div class="key-inner">5</div></button>
+      <button class="key" data-val="6"><div class="key-inner">6</div></button>
+      <button class="key op" data-val="-"><div class="key-inner">−</div></button>
+
+      <button class="key" data-val="1"><div class="key-inner">1</div></button>
+      <button class="key" data-val="2"><div class="key-inner">2</div></button>
+      <button class="key" data-val="3"><div class="key-inner">3</div></button>
+      <button class="key op" data-val="+"><div class="key-inner">+</div></button>
+
+      <button class="key wide" data-val="0"><div class="key-inner">0</div></button>
+      <button class="key"      data-val="."><div class="key-inner">.</div></button>
+      <button class="key eq"   data-val="="><div class="key-inner">=</div></button>
+    </div>
+
+    <div class="brand">♡ Elorah ♡</div>
+  </div>
+</div>
+
+<script>
+  /* ── SIZE CONFIG ──
+     scale: CSS transform scale applied to the 320px calc
+     h:     approximate natural height of the calc at scale 1 (for layout box) */
+  const SIZES = {
+    xs: { scale: 0.76, label: 'XS' },
+    sm: { scale: 0.80, label: 'S'  },
+    md: { scale: 0.85, label: 'M'  },
+    lg: { scale: 0.90, label: 'L'  },
+  };
+  let currentSize = 'md';
+
+  const sizer = document.getElementById('sizer');
+
+  function applySize(key) {
+    currentSize = key;
+    const s = SIZES[key].scale;
+    sizer.style.setProperty('--scale', s);
+    // Adjust the sizer's layout footprint so body centering stays accurate
+    sizer.style.width  = (320 * s) + 'px';
+    sizer.style.height = (520 * s) + 'px';
+
+    document.querySelectorAll('.size-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.size === key)
+    );
+  }
+
+  /* ── GEAR / PANEL ── */
+  const gearBtn = document.getElementById('gear-btn');
+  const panel   = document.getElementById('settings-panel');
+  let panelOpen = false;
+
+  function openPanel()  { panelOpen = true;  gearBtn.classList.add('open');  panel.classList.add('open'); }
+  function closePanel() { panelOpen = false; gearBtn.classList.remove('open'); panel.classList.remove('open'); }
+  function togglePanel() { panelOpen ? closePanel() : openPanel(); }
+
+  gearBtn.addEventListener('click', e => { e.stopPropagation(); togglePanel(); });
+
+  // Close when clicking outside the calc
+  document.addEventListener('click', e => {
+    if (panelOpen && !document.getElementById('calc').contains(e.target)) closePanel();
+  });
+
+  /* ── THEME SWITCHING ── */
+  document.querySelectorAll('.theme-dot').forEach(dot => {
+    dot.addEventListener('click', e => {
+      e.stopPropagation();
+      document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+      // Close panel after a short moment so user sees the color apply
+      setTimeout(closePanel, 320);
+    });
+  });
+
+  /* ── SIZE BUTTONS ── */
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      applySize(btn.dataset.size);
+      setTimeout(closePanel, 320);
+    });
+  });
+
+  // Init default size
+  applySize('md');
+
+  /* ── CALCULATOR LOGIC ── */
+  let current = '0', expression = '', justEvaled = false;
+  const disp = document.getElementById('display');
+  const expr = document.getElementById('expr');
+
+  function fmt(val) {
+    let s = String(val);
+    if (s.includes('e') || s.length > 12) s = parseFloat(parseFloat(s).toPrecision(9)).toString();
+    return s;
+  }
+
+  /* fmt with commas — used only for display, never for internal math */
+  function fmtCommas(val) {
+    let s = String(val);
+    if (s.includes('e') || s.length > 12) s = parseFloat(parseFloat(s).toPrecision(9)).toString();
+    const neg = s.startsWith('-');
+    if (neg) s = s.slice(1);
+    const [intPart, decPart] = s.split('.');
+    const withCommas = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const result = decPart !== undefined ? withCommas + '.' + decPart : withCommas;
+    return neg ? '-' + result : result;
+  }
+
+  function updateDisplay(val) { disp.textContent = fmtCommas(val); }
+
+  function pressKey(val) {
+    if (val === 'AC') { current = '0'; expression = ''; justEvaled = false; updateDisplay('0'); expr.textContent = ''; return; }
+    if (val === 'CE') { current = '0'; updateDisplay('0'); return; }
+    if (val === '%')  { current = String(parseFloat(current) / 100); updateDisplay(current); return; }
+    if (['+','-','*','/'].includes(val)) {
+      if (expression && !justEvaled) { try { current = String(eval(expression + current)); } catch(e){} updateDisplay(current); }
+      const sym = {'+':'+','-':'−','*':'×','/':'÷'}[val];
+      expression = current + val;
+      expr.textContent = fmt(current) + ' ' + sym;
+      current = '0'; justEvaled = false; return;
+    }
+    if (val === '=') {
+      if (!expression) return;
+      try {
+        const result = eval(expression + current);
+        expr.textContent = fmt(expression.replace(/[+\-*/]/g, m => ({'+':'+','-':'−','*':'×','/':'÷'}[m]))) + fmt(current) + ' =';
+        current = String(result); updateDisplay(current); expression = ''; justEvaled = true;
+      } catch(e) { updateDisplay('Error'); } return;
+    }
+    if (val === '.') { if (justEvaled) { current = '0'; justEvaled = false; } if (!current.includes('.')) current += '.'; updateDisplay(current); return; }
+    if (justEvaled) { current = ''; justEvaled = false; expression = ''; expr.textContent = ''; }
+    if (current === '0') current = val; else current += val;
+    if (current.length > 14) current = current.slice(0, 14);
+    updateDisplay(current);
+  }
+
+  document.getElementById('keys').addEventListener('click', e => {
+    const btn = e.target.closest('[data-val]');
+    if (!btn) return;
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 130);
+    pressKey(btn.dataset.val);
+  });
+
+  document.addEventListener('keydown', e => {
+    const map = {
+      '0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9',
+      '+':'+','-':'-','*':'*','/':'/','Enter':'=','=':'=','.':'.','%':'%',
+      'Escape':'AC','Delete':'CE','Backspace':'CE'
+    };
+    const v = map[e.key]; if (!v) return;
+    e.preventDefault();
+    const btn = document.querySelector(`[data-val="${v}"]`);
+    if (btn) { btn.classList.add('pressed'); setTimeout(() => btn.classList.remove('pressed'), 130); }
+    pressKey(v);
+  });
+</script>
+</body>
+</html>
