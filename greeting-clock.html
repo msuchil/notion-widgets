@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Greeting Clock</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.widget {
+  text-align: center;
+  line-height: 1;
+}
+
+.greeting {
+  font-size: 13px;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.12em;
+  color: #b8a99a;
+  margin-bottom: 4px;
+  opacity: 0;
+  animation: fadeIn 1.2s ease forwards;
+}
+
+.time {
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: #7a6e68;
+  opacity: 0;
+  animation: fadeIn 1.2s ease 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="widget">
+  <div class="greeting" id="greeting"></div>
+  <div class="time" id="time"></div>
+</div>
+
+<script>
+function getGreeting(h) {
+  if (h >= 5  && h < 12) return 'Good Morning';
+  if (h >= 12 && h < 17) return 'Good Afternoon';
+  if (h >= 17 && h < 21) return 'Good Evening';
+  return 'Good Night';
+}
+
+function tick() {
+  const now  = new Date();
+  const h    = now.getHours();
+  const min  = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12  = h % 12 || 12;
+  const m    = String(min).padStart(2, '0');
+
+  document.getElementById('greeting').textContent = getGreeting(h);
+  document.getElementById('time').textContent     = `${h12}:${m} ${ampm}`;
+}
+
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
