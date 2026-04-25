@@ -43,123 +43,231 @@
     </div>
   </div>
 
+  <!-- WIDGET THUMBNAIL STYLES -->
+  <style>
+    /*
+     * Fixed Thumbnail Grid — the recommended approach.
+     *
+     * Each .product-thumb is a fixed-height viewport (160px).
+     * .thumb-scale-wrap holds the real widget at its natural size,
+     * then CSS transform: scale() shrinks it to fit. This keeps
+     * aspect ratios intact and avoids any cropping or distortion.
+     * pointer-events: none prevents any accidental interaction.
+     */
+    .product-thumb {
+      position: relative;
+      width: 100%;
+      height: 160px;       /* every card gets the same thumb height */
+      overflow: hidden;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Wrapper that holds the widget at its natural size,
+       then gets scaled down via an inline style set by JS */
+    .thumb-scale-wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      pointer-events: none;
+      /* transform is set by the JS below based on each widget's real dimensions */
+    }
+
+    /* iframes inside the scale wrap render at their natural size */
+    .thumb-scale-wrap iframe {
+      display: block;
+      border: none;
+    }
+
+    /* Static image fallback — fill the thumb zone, object-fit keeps aspect ratio */
+    .product-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+  </style>
+
   <!-- PRODUCTS -->
   <section class="shop-section section">
     <div class="container">
       <div class="product-grid large" id="widget-grid">
 
-<!-- Flip Clock Widget -->
-        <div class="product-card" data-tags="free clock">
-          <div class="product-thumb" style="background:#ede6dd;">
-            <iframe 
-              src="flip-clock.html" 
-              scrolling="no"
-              style="width:100%; height:160px; border:none; pointer-events:none;">
-            </iframe>
+        <!-- Flip Clock Widget
+             data-w / data-h = the widget's REAL pixel dimensions.
+             JS reads these to compute the right scale factor. -->
+        <div class="product-card" data-tags="free Clock">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-scale-wrap" data-w="320" data-h="160">
+              <iframe
+                src="greeting-clock.html"
+                scrolling="no"
+                width="320"
+                height="160">
+              </iframe>
+            </div>
           </div>
           <div class="product-info">
             <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Clock</span></div>
-            <h4>Flip Clock Widget</h4>
-            <p>A satisfying flip-style clock for your Notion sidebar.</p>
+            <h4>Simple Clock</h4>
+            <p>A simple greeting clock</p>
             <div class="product-actions">
               <span class="product-price">Free</span>
-              <a href="flip-clock.html" target = "_blank" class="btn btn-sm btn-primary">Preview</a>
-            </div>
-          </div>
-        </div>
-<!-- Simple Calculator Widget -->
-        <div class="product-card" data-tags="free calculator">
-          <div class="product-thumb">
-            <img src="widget-Images/SimpleCalculator-Card.png" alt="Simple Calculator Widget" />
-          </div>
-          <div class="product-info">
-            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Calculator</span>
-            </div>
-            <h4>Simple Calculator</h4>
-            <p>A soft, bubbly calculator for your Notion page.</p>
-            <div class="product-actions">
-              <span class="product-price">Free</span>
-              <div style="display:flex; gap:8px;">
-                <a href="SimpleCalculator.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
-                <a href="#" class="btn btn-sm btn-primary">Get it</a>
-              </div>
-            </div>
-            </div>
-          </div>
-<!-- Daily Quote Widget -->
-        <div class="product-card" data-tags="free quote">
-          <div class="product-thumb" style="background:#e8ddd0;">
-            <iframe 
-              src="daily-quote.html" 
-              scrolling="no"
-              style="width:100%; height:160px; border:none; pointer-events:none;">
-            </iframe>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Quote</span></div>
-            <h4>Daily Quote Widget</h4>
-            <p>A new curated quote every day. Minimalist display, warm tones.</p>
-            <div class="product-actions">
-              <span class="product-price">Free</span>
+              <a href="greeting-clock.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
               <a href="#" class="btn btn-sm btn-primary">Get it</a>
             </div>
           </div>
         </div>
-<!-- Advanced Calculator Widget -->
-        <div class="product-card" data-tags="free calculator">
-          <div class="product-thumb" style="background:#d9cfc4;">
-            <div class="thumb-inner calculator-demo">
-              <span class="td-time" style="font-size:1.1rem;">☽ 22:15</span>
-              <span class="td-date">Good evening</span>
+
+        <!-- Simple Calculator Widget — uses a static card image -->
+        <div class="product-card" data-tags="free Calculator">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-scale-wrap" data-w="600" data-h="400">
+              <iframe
+                src="SimpleCalculator.html"
+                scrolling="no"
+                width="600"
+                height="400">
+              </iframe>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Calculator</span></div>
+            <h4>Simple Calculator</h4>
+            <p>A soft, bubbly calculator for your Notion page</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="SimpleCalculator.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced Calculator Widget -->
+        <div class="product-card" data-tags="free Calculator">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-scale-wrap" data-w="300" data-h="460">
+              <iframe
+                src="AdvancedCalculator.html"
+                scrolling="no"
+                width="300"
+                height="460">
+              </iframe>
             </div>
           </div>
           <div class="product-info">
             <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Calculator</span></div>
             <h4>Advanced Calculator</h4>
-            <p>A powerful calculator with scientific functions for your Notion page.</p>
+            <p>A powerful calculator with scientific functions and currency conversion</p>
             <div class="product-actions">
               <span class="product-price">Free</span>
-              <a href="#" class="btn btn-sm btn-primary">Preview</a>
-            </div>
-          </div>
-        </div>
-<!-- Mac-Gallery Widget -->
-        <div class="product-card" data-tags="free Gallery">
-          <div class="product-thumb" style="background:#ede6dd;">
-            <div class="thumb-inner" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
-              <div style="width:80px;height:8px;border-radius:99px;background:#c4b49a;overflow:hidden;"><div style="width:60%;height:100%;background:#8b6f52;border-radius:99px;"></div></div>
-              <span style="font-family:'Jost',sans-serif;font-size:0.65rem;color:#8b6f52;letter-spacing:0.08em;">GOAL: 60%</span>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Tracker</span></div>
-            <h4>Goal Progress Bar</h4>
-            <p>A soft animated progress bar to embed on any goal or project page.</p>
-            <div class="product-actions">
-              <span class="product-price">Free</span>
-              <a href="#" class="btn btn-sm btn-primary">Preview</a>
-            </div>
-          </div>
-        </div>
-<!-- Side Panel Widget -->
-        <div class="product-card" data-tags="free quote">
-          <div class="product-thumb">
-            <img src="widget-Images/SidePanel-Card.png" alt="Side Panel Widget" />
-          </div>
-          <div class="product-info">
-            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Gallery</span>
-            </div>
-            <h4>Side Panel</h4>
-            <p>A thin photo/gif panel for your Notion sidebar.</p>
-            <div class="product-actions">
-              <span class="product-price">Free</span>
-              <a href="side-panel.html" target=""_blank" class="btn btn-sm btn-ghost">Preview</a>
-              <a href="#" target="_blank" class="btn btn-sm btn-primary">Get it</a>
+              <a href="AdvancedCalculator.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
             </div>
           </div>
         </div>
 
+        <!-- Daily Quote Widget -->
+        <div class="product-card" data-tags="free Quote">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-scale-wrap" data-w="400" data-h="200">
+              <iframe
+                src="daily-quote.html"
+                scrolling="no"
+                width="400"
+                height="200">
+              </iframe>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Quote</span></div>
+            <h4>Daily Quote</h4>
+            <p>A new curated quote every day. Minimalist display, warm tones</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="daily-quote.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mac-Gallery Bar Widget -->
+        <div class="product-card" data-tags="free Gallery">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-scale-wrap" data-w="375" data-h="400">
+              <iframe
+                src="Mac-Gallery.html"
+                scrolling="no"
+                width="375"
+                height="400">
+              </iframe>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Gallery</span></div>
+            <h4>1990s Mac Gallery</h4>
+            <p>A soft gallery showcasing the aesthetics of 1990s Mac computers</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="Mac-Gallery.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Panel Widget — uses a static card image -->
+        <div class="product-card" data-tags="free Photo">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-scale-wrap" data-w="150" data-h="415">
+              <iframe
+                src="side-panel.html"
+                scrolling="no"
+                width="150"
+                height="415">
+              </iframe>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Photo/GIF</span></div>
+            <h4>Photo Panel</h4>
+            <p>A thin photo/gif panel for your Notion sidebar</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="side-panel.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Media Buttons -->
+        <div class="product-card" data-tags="free Button">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-scale-wrap" data-w="290" data-h="110">
+              <iframe
+                src="social-buttons.html"
+                scrolling="no"
+                width="290"
+                height="110">
+              </iframe>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Button</span></div>
+            <h4>Social Media Buttons</h4>
+            <p>Pre-designed social media buttons</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="social-buttons.html" target="_blank" class="btn btn-sm btn-ghost">Preview</a>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -186,6 +294,7 @@
 
   <script src="nav.js"></script>
   <script>
+    /* ── Filter bar ── */
     const btns = document.querySelectorAll('.filter-btn');
     const cards = document.querySelectorAll('#widget-grid .product-card');
     btns.forEach(btn => {
@@ -198,6 +307,29 @@
           c.style.display = (f === 'all' || tags.includes(f)) ? '' : 'none';
         });
       });
+    });
+
+    /* ── Thumbnail scale ──────────────────────────────────────────────────
+     *
+     * For each .thumb-scale-wrap the widget's real pixel size is stored in
+     * data-w / data-h.  We compare those to the fixed 160 px thumb height
+     * (with a small inset for breathing room) and compute a scale factor
+     * that makes the widget fill the card without cropping or distortion.
+     *
+     * The wrapper is then nudged so it stays centred inside the thumb zone
+     * via translate(-50%, -50%) combined with the scale.
+     * ──────────────────────────────────────────────────────────────────── */
+    document.querySelectorAll('.thumb-scale-wrap').forEach(wrap => {
+      const nativeW = parseFloat(wrap.dataset.w) || 400;
+      const nativeH = parseFloat(wrap.dataset.h) || 200;
+      const thumbH  = 148;   /* target height in px (card height – a little padding) */
+      const thumbW  = wrap.closest('.product-thumb').offsetWidth || 280;
+
+      const scaleByH = thumbH / nativeH;
+      const scaleByW = thumbW / nativeW;
+      const scale    = Math.min(scaleByH, scaleByW);  /* fit, never clip */
+
+      wrap.style.transform = `translate(-50%, -50%) scale(${scale})`;
     });
   </script>
 </body>
