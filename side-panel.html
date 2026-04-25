@@ -21,12 +21,18 @@ html, body {
 .panel:hover { border-color: #d8d8d8; }
 .panel.has-media { cursor: default; }
 .panel.has-media:hover { border-color: #e8e8e8; }
+/* Edit mode glow */
+.panel.edit-mode { border-color: rgba(139,111,78,0.65); box-shadow: 0 0 0 2px rgba(139,111,78,0.15); }
 .img-viewport {
   position: absolute; inset: 0; border-radius: 20px;
-  overflow: hidden; cursor: grab; display: none;
+  overflow: hidden; display: none;
+  /* LOCKED by default — completely inert */
+  cursor: default; pointer-events: none;
 }
 .img-viewport.active { display: block; }
-.img-viewport:active { cursor: grabbing; }
+/* Only interactive in edit mode */
+.panel.edit-mode .img-viewport { cursor: grab; pointer-events: all; }
+.panel.edit-mode .img-viewport:active { cursor: grabbing; }
 .img-viewport img {
   position: absolute; top: 50%; left: 50%;
   transform-origin: center center; pointer-events: none;
@@ -54,12 +60,12 @@ html, body {
   width: 20px; height: 20px; border: none; background: none;
   cursor: pointer; padding: 0; display: none;
   align-items: center; justify-content: center;
-  color: rgba(88, 86, 86, 0.5); z-index: 30;
+  color: rgba(78, 77, 77, 0.603); z-index: 30;
   transition: color 0.2s, transform 0.35s;
 }
 .gear-btn svg { width: 13px; height: 13px; }
 .gear-btn:hover { color: rgba(255,255,255,0.9); }
-.gear-btn.open { color: rgba(255,255,255,0.9); transform: rotate(60deg); }
+.gear-btn.edit-active { color: rgba(255,210,160,0.95); transform: rotate(60deg); }
 .panel.has-media .gear-btn { display: flex; }
 .gear-panel {
   position: fixed; width: 140px;
@@ -83,6 +89,26 @@ html, body {
 .gp-item.danger { color: #d08080; }
 .gp-item.danger:hover { background: rgba(220,80,80,0.06); color: #c06060; }
 .gp-div { height: 1px; background: rgba(0,0,0,0.06); margin: 4px 0; }
+/* Edit mode toggle row */
+.gp-edit-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px 4px; }
+.gp-edit-lbl { font-size: 10px; font-weight: 700; color: #555; font-family: 'Nunito', sans-serif; }
+.gp-toggle {
+  width: 28px; height: 15px; background: #ddd; border-radius: 8px;
+  position: relative; cursor: pointer; transition: background 0.2s;
+  border: none; padding: 0; flex-shrink: 0;
+}
+.gp-toggle.on { background: #8b6f4e; }
+.gp-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 11px; height: 11px; border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18); transition: transform 0.18s;
+}
+.gp-toggle.on::after { transform: translateX(13px); }
+/* Dim controls when locked */
+.gear-panel.locked .gp-zoom,
+.gear-panel.locked #gp-reset,
+.gear-panel.locked #gp-swap,
+.gear-panel.locked #gp-remove { opacity: 0.3; pointer-events: none; }
 .gp-zoom { display: flex; align-items: center; padding: 4px 12px; gap: 5px; }
 .gz-btn {
   width: 20px; height: 20px; border-radius: 50%; border: none;
@@ -102,7 +128,7 @@ html, body {
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
     </div>
     <span class="empty-text">Tap to add<br>image or GIF</span>
-    <span class="empty-hint">Best at 1 : 3.5 ratio</span>
+    <span class="empty-hint">Best at 1 : 3.5 ratio<br>e.g. 300 × 1050 px</span>
   </div>
   <div class="img-viewport" id="viewport"></div>
   <button class="gear-btn" id="gear-btn" title="Settings">
@@ -115,7 +141,12 @@ html, body {
 
 <input type="file" id="file-input" accept="image/*" style="display:none"/>
 
-<div class="gear-panel" id="gear-panel">
+<div class="gear-panel locked" id="gear-panel">
+  <div class="gp-edit-row">
+    <span class="gp-edit-lbl">Edit mode</span>
+    <button class="gp-toggle" id="edit-toggle"></button>
+  </div>
+  <div class="gp-div"></div>
   <div class="gp-lbl">Zoom</div>
   <div class="gp-zoom">
     <button class="gz-btn" id="gz-out">−</button>
@@ -144,6 +175,7 @@ const empty     = document.getElementById('empty');
 const viewport  = document.getElementById('viewport');
 const gearBtn   = document.getElementById('gear-btn');
 const gearPanel = document.getElementById('gear-panel');
+const editToggle= document.getElementById('edit-toggle');
 const gzIn      = document.getElementById('gz-in');
 const gzOut     = document.getElementById('gz-out');
 const gzPct     = document.getElementById('gz-pct');
@@ -153,7 +185,16 @@ const gpRemove  = document.getElementById('gp-remove');
 const fileInput = document.getElementById('file-input');
 
 let imgEl = null, scale = 1, ox = 0, oy = 0;
+let editMode = false;
 const ZMIN = 0.2, ZMAX = 4.0, ZSTEP = 0.2;
+
+function setEditMode(on) {
+  editMode = on;
+  panel.classList.toggle('edit-mode', on);
+  gearBtn.classList.toggle('edit-active', on);
+  editToggle.classList.toggle('on', on);
+  gearPanel.classList.toggle('locked', !on);
+}
 
 function render() {
   if (!imgEl) return;
@@ -178,6 +219,8 @@ function closeGear() { gearOpen = false; gearBtn.classList.remove('open'); gearP
 gearBtn.addEventListener('click', e => { e.stopPropagation(); gearOpen ? closeGear() : openGear(); });
 document.addEventListener('click', e => { if (gearOpen && !gearPanel.contains(e.target) && e.target !== gearBtn) closeGear(); });
 
+editToggle.addEventListener('click', e => { e.stopPropagation(); setEditMode(!editMode); });
+
 gzIn.addEventListener('click',  e => { e.stopPropagation(); zoom(ZSTEP); });
 gzOut.addEventListener('click', e => { e.stopPropagation(); zoom(-ZSTEP); });
 gpReset.addEventListener('click', e => { e.stopPropagation(); resetView(); closeGear(); });
@@ -186,21 +229,22 @@ gpRemove.addEventListener('click', e => {
   e.stopPropagation(); closeGear();
   if (imgEl) { imgEl.remove(); imgEl = null; }
   viewport.classList.remove('active');
-  panel.classList.remove('has-media');
+  panel.classList.remove('has-media', 'edit-mode');
+  gearBtn.classList.remove('edit-active');
   empty.style.display = '';
-  scale = 1; ox = 0; oy = 0;
+  scale = 1; ox = 0; oy = 0; editMode = false;
 });
 
-viewport.addEventListener('wheel', e => { e.preventDefault(); zoom(e.deltaY < 0 ? ZSTEP : -ZSTEP); }, { passive: false });
+viewport.addEventListener('wheel', e => { if (!editMode) return; e.preventDefault(); zoom(e.deltaY < 0 ? ZSTEP : -ZSTEP); }, { passive: false });
 
 let drag = false, sx, sy, sox, soy;
-viewport.addEventListener('mousedown', e => { e.preventDefault(); drag=true; sx=e.clientX; sy=e.clientY; sox=ox; soy=oy; });
+viewport.addEventListener('mousedown', e => { if (!editMode) return; e.preventDefault(); drag=true; sx=e.clientX; sy=e.clientY; sox=ox; soy=oy; });
 window.addEventListener('mousemove', e => { if(!drag)return; ox=sox+(e.clientX-sx); oy=soy+(e.clientY-sy); render(); });
 window.addEventListener('mouseup', () => drag=false);
 
 let tx, ty, tox, toy;
-viewport.addEventListener('touchstart', e => { const t=e.touches[0]; tx=t.clientX; ty=t.clientY; tox=ox; toy=oy; }, {passive:true});
-viewport.addEventListener('touchmove', e => { const t=e.touches[0]; ox=tox+(t.clientX-tx); oy=toy+(t.clientY-ty); render(); }, {passive:true});
+viewport.addEventListener('touchstart', e => { if (!editMode) return; const t=e.touches[0]; tx=t.clientX; ty=t.clientY; tox=ox; toy=oy; }, {passive:true});
+viewport.addEventListener('touchmove', e => { if (!editMode) return; const t=e.touches[0]; ox=tox+(t.clientX-tx); oy=toy+(t.clientY-ty); render(); }, {passive:true});
 
 function mountImage(src) {
   if (imgEl) { imgEl.remove(); imgEl = null; }

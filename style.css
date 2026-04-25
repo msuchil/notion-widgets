@@ -386,12 +386,12 @@ em { font-family: var(--font-serif); font-style: italic; font-weight: 300; }
   transform: translateY(-4px);
 }
 
-.product-thumb {
+.product-thumb img {
   width: 100%;
-  height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 0;
 }
 
 .product-thumb.tall-thumb {
