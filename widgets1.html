@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notion Widgets — The Widget Studio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">The Widget Studio</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="templates.html">Notion Templates</a></li>
+      <li><a href="widgets.html" class="active">Notion Widgets</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="menu">☰</button>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-eyebrow">Collection</p>
+      <h1 class="page-title">Notion Widgets</h1>
+      <p class="page-sub">Embed these directly into any Notion page to add life, beauty, and function to your workspace.</p>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="container filter-inner">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="free">Free</button>
+      <button class="filter-btn" data-filter="paid">Paid</button>
+      <button class="filter-btn" data-filter="clock">Clocks</button>
+      <button class="filter-btn" data-filter="tracker">Trackers</button>
+      <button class="filter-btn" data-filter="quote">Quotes</button>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <section class="shop-section section">
+    <div class="container">
+      <div class="product-grid large" id="widget-grid">
+
+        <div class="product-card" data-tags="free clock">
+          <div class="product-thumb" style="background:#ede6dd;">
+            <div class="thumb-inner clock-demo">
+              <span class="td-time">10:42</span>
+              <span class="td-date">Monday, April</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Clock</span></div>
+            <h4>Minimal Clock Widget</h4>
+            <p>A soft, readable clock that fits any Notion aesthetic. Digital display with date.</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="paid tracker">
+          <div class="product-thumb" style="background:#e2d8cc;">
+            <div class="thumb-inner habit-demo">
+              <div class="hd-row"><span class="hd-dot done"></span><span class="hd-dot done"></span><span class="hd-dot done"></span><span class="hd-dot"></span><span class="hd-dot"></span><span class="hd-dot"></span><span class="hd-dot"></span></div>
+              <span class="hd-label">Habit Tracker</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge paid">$4</span><span class="badge-cat">Tracker</span></div>
+            <h4>Weekly Habit Tracker</h4>
+            <p>Gentle visual streak tracker. Check off habits and watch your week fill up.</p>
+            <div class="product-actions">
+              <span class="product-price">$4</span>
+              <a href="#" class="btn btn-sm btn-primary">Buy</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="free quote">
+          <div class="product-thumb" style="background:#e8ddd0;">
+            <div class="thumb-inner quote-demo">
+              <span class="qd-text">"Small steps<br/>every day."</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Quote</span></div>
+            <h4>Daily Quote Widget</h4>
+            <p>A new curated quote every day. Minimalist display, warm tones.</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="paid clock">
+          <div class="product-thumb" style="background:#d9cfc4;">
+            <div class="thumb-inner clock-demo">
+              <span class="td-time" style="font-size:1.1rem;">☽ 22:15</span>
+              <span class="td-date">Good evening</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge paid">$3</span><span class="badge-cat">Clock</span></div>
+            <h4>Day/Night Greeting Clock</h4>
+            <p>Changes its greeting and icon based on the time of day. Personal and warm.</p>
+            <div class="product-actions">
+              <span class="product-price">$3</span>
+              <a href="#" class="btn btn-sm btn-primary">Buy</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="paid tracker">
+          <div class="product-thumb" style="background:#ede6dd;">
+            <div class="thumb-inner" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+              <div style="width:80px;height:8px;border-radius:99px;background:#c4b49a;overflow:hidden;"><div style="width:60%;height:100%;background:#8b6f52;border-radius:99px;"></div></div>
+              <span style="font-family:'Jost',sans-serif;font-size:0.65rem;color:#8b6f52;letter-spacing:0.08em;">GOAL: 60%</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge paid">$5</span><span class="badge-cat">Tracker</span></div>
+            <h4>Goal Progress Bar</h4>
+            <p>A soft animated progress bar to embed on any goal or project page.</p>
+            <div class="product-actions">
+              <span class="product-price">$5</span>
+              <a href="#" class="btn btn-sm btn-primary">Buy</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-tags="free quote">
+          <div class="product-thumb" style="background:#e2d8cc;">
+            <div class="thumb-inner">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#6b5744;text-align:center;line-height:1.4;">🌿<br/>Today is a<br/>fresh start.</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-meta"><span class="badge free">Free</span><span class="badge-cat">Quote</span></div>
+            <h4>Affirmation Widget</h4>
+            <p>Gentle daily affirmations for your morning Notion routine.</p>
+            <div class="product-actions">
+              <span class="product-price">Free</span>
+              <a href="#" class="btn btn-sm btn-primary">Get it</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section section">
+    <div class="container cta-inner">
+      <h2>Looking for a full system?</h2>
+      <p>Check out the Notion Templates — pre-built dashboards ready to go.</p>
+      <a href="templates.html" class="btn btn-primary">Browse Templates →</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-logo">The Widget Studio</span>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="templates.html">Templates</a>
+        <a href="widgets.html">Widgets</a>
+      </nav>
+      <span class="footer-copy">© 2026 The Widget Studio</span>
+    </div>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    const btns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('#widget-grid .product-card');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        cards.forEach(c => {
+          const tags = c.dataset.tags || '';
+          c.style.display = (f === 'all' || tags.includes(f)) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
