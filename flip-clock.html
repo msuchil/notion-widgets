@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Flip Clock</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+}
+
+.clock-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px 14px;
+}
+
+.date-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.weekday {
+  font-size: 11px;
+  font-weight: 600;
+  color: #adadad;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.datestr {
+  font-size: 12px;
+  font-weight: 400;
+  color: #afafaf;
+  letter-spacing: 0.04em;
+}
+
+.flip-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.colon {
+  font-size: 22px;
+  font-weight: 300;
+  color: #afafaf;
+  line-height: 1;
+  padding-bottom: 14px;
+  font-family: 'Nunito', sans-serif;
+  user-select: none;
+}
+
+.flip-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.flip-card {
+  position: relative;
+  width: 44px;
+  height: 50px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f8f8f8;
+  border: 1px solid #ececec;
+  perspective: 200px;
+}
+
+.flip-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-bottom: 0.5px solid #e4e4e4;
+  background: #f8f8f8;
+  transform-origin: bottom center;
+}
+
+.flip-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: #f2f2f2;
+  transform-origin: top center;
+}
+
+.flip-top span {
+  font-family: 'Nunito', sans-serif;
+  font-size: 30px;
+  font-weight: 500;
+  color: #afafaf;
+  line-height: 1;
+  transform: translateY(50%);
+  display: block;
+  user-select: none;
+}
+
+.flip-bottom span {
+  font-family: 'Nunito', sans-serif;
+  font-size: 30px;
+  font-weight: 500;
+  color: #afafaf;
+  line-height: 1;
+  transform: translateY(-50%);
+  display: block;
+  user-select: none;
+}
+
+.flip-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #aaaaaa;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.ampm {
+  font-size: 10px;
+  font-weight: 600;
+  color: #cccccc;
+  letter-spacing: 0.1em;
+  align-self: flex-end;
+  margin-bottom: 14px;
+  font-family: 'Nunito', sans-serif;
+  user-select: none;
+}
+
+.flipping .flip-top {
+  animation: flipTop 0.16s ease-in forwards;
+}
+.flipping .flip-bottom {
+  animation: flipBottom 0.16s ease-out 0.16s forwards;
+}
+
+@keyframes flipTop {
+  0%   { transform: rotateX(0deg); }
+  100% { transform: rotateX(-90deg); }
+}
+@keyframes flipBottom {
+  0%   { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="clock-root">
+
+  <div class="date-line">
+    <span class="weekday" id="weekday"></span>
+    <span class="datestr" id="datestr"></span>
+  </div>
+
+  <div class="flip-row">
+
+    <div class="flip-unit">
+      <div class="flip-card" id="card-h">
+        <div class="flip-top"><span id="ht">12</span></div>
+        <div class="flip-bottom"><span id="hb">12</span></div>
+      </div>
+      <span class="flip-label">hr</span>
+    </div>
+
+    <div class="colon">:</div>
+
+    <div class="flip-unit">
+      <div class="flip-card" id="card-m">
+        <div class="flip-top"><span id="mt">00</span></div>
+        <div class="flip-bottom"><span id="mb">00</span></div>
+      </div>
+      <span class="flip-label">min</span>
+    </div>
+
+    <div class="colon">:</div>
+
+    <div class="flip-unit">
+      <div class="flip-card" id="card-s">
+        <div class="flip-top"><span id="st">00</span></div>
+        <div class="flip-bottom"><span id="sb">00</span></div>
+      </div>
+      <span class="flip-label">sec</span>
+    </div>
+
+    <span class="ampm" id="ampm">AM</span>
+
+  </div>
+
+</div>
+
+<script>
+const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function pad(n) { return String(n).padStart(2,'0'); }
+
+let prevH = -1, prevM = -1, prevS = -1;
+
+function flip(cardId, topId, botId, val) {
+  const card = document.getElementById(cardId);
+  const top  = document.getElementById(topId);
+  const bot  = document.getElementById(botId);
+  top.textContent = val;
+  bot.textContent = val;
+  card.classList.remove('flipping');
+  void card.offsetWidth;
+  card.classList.add('flipping');
+  setTimeout(() => card.classList.remove('flipping'), 360);
+}
+
+function tick() {
+  const now  = new Date();
+  let   h    = now.getHours();
+  const m    = now.getMinutes();
+  const s    = now.getSeconds();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+
+  const hStr = pad(h);
+  const mStr = pad(m);
+  const sStr = pad(s);
+
+  document.getElementById('weekday').textContent = DAYS[now.getDay()];
+  document.getElementById('datestr').textContent =
+    MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  document.getElementById('ampm').textContent = ampm;
+
+  if (h !== prevH) { flip('card-h','ht','hb', hStr); prevH = h; }
+  if (m !== prevM) { flip('card-m','mt','mb', mStr); prevM = m; }
+  if (s !== prevS) { flip('card-s','st','sb', sStr); prevS = s; }
+}
+
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
