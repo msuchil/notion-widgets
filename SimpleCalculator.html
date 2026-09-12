@@ -113,7 +113,7 @@
   .calc {
     background: var(--calc-shell);
     border-radius: 28px;
-    padding: 24px 22px 28px;
+    padding: 24px 22px 44px;
     box-shadow:
       0 8px 0 var(--calc-shell-shadow),
       0 12px 40px rgba(0,0,0,0.12),
@@ -351,25 +351,8 @@
     color: var(--key-text);
     box-shadow: 0 3px 0 var(--key-shadow);
   }
-  .save-btn {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    padding: 7px 0;
-    border-radius: 10px;
-    border: none;
-    background: rgba(0,0,0,0.06);
-    font-family: 'Nunito', sans-serif;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #999;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-  .save-btn:hover { background: rgba(0,0,0,0.11); color: #555; }
-  .save-btn:active { transform: translateY(1px); }
+  .size-btn .size-label { font-size: 12px; font-weight: 700; }
+  .size-btn .size-sub   { font-size: 8px; opacity: 0.6; font-weight: 400; }
 </style>
 </head>
 <body>
@@ -418,10 +401,9 @@
           <span class="size-sub">large</span>
         </button>
       </div>
-
-      <div class="panel-divider"></div>
-      <button class="save-btn" id="save-btn">⬇ Save my version</button>
     </div>
+
+    <!-- Screws -->
     <div class="screws">
       <div class="screw"></div>
       <div class="screw"></div>
@@ -461,7 +443,6 @@
       <button class="key eq"   data-val="="><div class="key-inner">=</div></button>
     </div>
 
-    <div class="brand">♡ Elorah ♡</div>
   </div>
 </div>
 
@@ -531,36 +512,6 @@
 
   // Init default size
   applySize('md');
-
-  /* ── SAVE TO FILE ── */
-  document.getElementById('save-btn').addEventListener('click', function(e) {
-    e.stopPropagation();
-    const theme = document.documentElement.getAttribute('data-theme') || '';
-    const size  = currentSize;
-    // Clone the full HTML and inject a boot-state script to restore theme+size
-    let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-    const bootScript = `<script>
-(function(){
-  var t='${theme}', s='${size}';
-  document.documentElement.setAttribute('data-theme', t);
-  document.addEventListener('DOMContentLoaded', function(){
-    if(typeof applySize==='function') applySize(s);
-    var dots = document.querySelectorAll('.theme-dot');
-    dots.forEach(function(d){ d.classList.toggle('active', d.dataset.theme===t); });
-    var btns = document.querySelectorAll('.size-btn');
-    btns.forEach(function(b){ b.classList.toggle('active', b.dataset.size===s); });
-  });
-})();
-<\/script>`;
-    html = html.replace('<head>', '<head>' + bootScript);
-    const blob = new Blob([html], { type: 'text/html' });
-    const a    = document.createElement('a');
-    a.href     = URL.createObjectURL(blob);
-    a.download = 'SimpleCalculator.html';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    closePanel();
-  });
 
   /* ── CALCULATOR LOGIC ── */
   let current = '0', expression = '', justEvaled = false;
