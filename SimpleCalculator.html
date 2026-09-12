@@ -321,6 +321,16 @@
     opacity: 0.4;
     margin: 0 0 12px;
   }
+  .save-btn {
+    display: block; width: 100%; padding: 7px 0; margin-top: 2px;
+    border-radius: 10px; border: none;
+    background: rgba(0,0,0,0.06);
+    font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; color: #999;
+    cursor: pointer; transition: background .15s, color .15s;
+  }
+  .save-btn:hover { background: rgba(0,0,0,0.11); color: #555; }
+  .save-btn:active { transform: translateY(1px); }
 
   /* Size buttons */
   .size-row {
@@ -401,6 +411,9 @@
           <span class="size-sub">large</span>
         </button>
       </div>
+
+      <div class="panel-divider"></div>
+      <button class="save-btn" id="save-btn">⬇ Save my version</button>
     </div>
 
     <!-- Screws -->
@@ -512,6 +525,33 @@
 
   // Init default size
   applySize('md');
+
+  /* ── SAVE TO FILE ── */
+  document.getElementById('save-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const theme = document.documentElement.getAttribute('data-theme') || '';
+    const size  = currentSize;
+    const boot  = `<script>
+(function(){
+  var t='${theme}', s='${size}';
+  if(t) document.documentElement.setAttribute('data-theme', t);
+  document.addEventListener('DOMContentLoaded', function(){
+    if(typeof applySize==='function') applySize(s);
+    document.querySelectorAll('.theme-dot').forEach(function(d){ d.classList.toggle('active', d.dataset.theme===t); });
+    document.querySelectorAll('.size-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.size===s); });
+  });
+})();
+<\/script>`;
+    let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    html = html.replace('<head>', '<head>' + boot);
+    const blob = new Blob([html], { type: 'text/html' });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = 'SimpleCalculator.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    closePanel();
+  });
 
   /* ── CALCULATOR LOGIC ── */
   let current = '0', expression = '', justEvaled = false;
