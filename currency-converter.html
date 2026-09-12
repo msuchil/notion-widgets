@@ -92,19 +92,28 @@ body{
   transform-origin:top center;
 }
 
-/* ── SCREWS ── */
-.screws{display:flex;justify-content:space-between;padding:0 2px;margin-bottom:14px;}
-.screw{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--shell-shadow);
-  box-shadow:inset 1px 1px 2px rgba(0,0,0,.15),inset -1px -1px 1px rgba(255,255,255,.5);
-  position:relative;
+/* ── TOP BAR ── */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
 }
-.screw::after{
-  content:'';position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(45deg);
-  width:4px;height:1px;background:rgba(0,0,0,.15);
+.top-title{
+  font-size:8px;font-weight:800;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--label);opacity:.7;
 }
+
+/* ── GEAR BUTTON ── */
+.gear-btn{
+  width:22px;height:22px;border-radius:50%;
+  background:transparent;border:none;
+  cursor:pointer;padding:0;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gear-color);
+  transition:transform .3s, color .2s;opacity:.6;
+}
+.gear-btn:hover{opacity:1;}
+.gear-btn.open{transform:rotate(60deg);opacity:1;}
+.gear-btn svg{width:15px;height:15px;}
 
 /* ── SECTION LABEL ── */
 .lbl{
@@ -113,7 +122,6 @@ body{
   margin-bottom:7px;opacity:.8;
 }
 
-/* ── STATUS ── */
 .status{
   font-size:8px;font-weight:600;color:var(--status);
   letter-spacing:.5px;margin-bottom:12px;
@@ -208,7 +216,7 @@ body{
 
 /* ── GEAR BUTTON ── */
 .gear-btn{
-  position:absolute;top:30px;right:18px;
+  position:absolute;top:18px;right:18px;
   width:22px;height:22px;border-radius:50%;
   background:transparent;border:none;
   cursor:pointer;padding:0;
@@ -222,7 +230,7 @@ body{
 
 /* ── SETTINGS PANEL ── */
 .settings-panel{
-  position:absolute;top:40px;right:14px;
+  position:absolute;top:46px;right:14px;
   width:164px;
   background:rgba(255,255,255,.97);
   border-radius:16px;
@@ -273,15 +281,31 @@ body{
 .sp-size-btn:hover{background:rgba(0,0,0,.07);color:#999;}
 .sp-size-btn.on{background:rgba(0,0,0,.08);color:#777;border-color:rgba(0,0,0,.2);}
 .sp-size-sub{font-size:7px;font-weight:400;opacity:.6;letter-spacing:0;}
+.sp-save-btn{
+  display:block; width:100%; margin-top:10px; padding:7px 0;
+  border-radius:10px; border:none; background:rgba(0,0,0,0.06);
+  font-family:'Nunito',sans-serif; font-size:9px; font-weight:800;
+  letter-spacing:2px; text-transform:uppercase; color:#999;
+  cursor:pointer; transition:background .15s, color .15s;
+}
+.sp-save-btn:hover{background:rgba(0,0,0,.11);color:#555;}
+.sp-save-btn:active{transform:translateY(1px);}
 </style>
 </head>
 <body>
 <div class="sizer" id="sizer">
 <div class="shell" id="shell">
 
-  <div class="screws"><div class="screw"></div><div class="screw"></div></div>
+  <div class="top-bar">
+    <span class="top-title">Currency</span>
+    <button class="gear-btn" id="gear-btn" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
 
-  <div class="lbl">Currency Converter</div>
   <div class="status" id="status">Loading rates…</div>
 
   <!-- Amount -->
@@ -310,14 +334,6 @@ body{
 
   <div class="rate-note" id="fx-note">Rates updated on load · May vary slightly</div>
 
-  <!-- Gear -->
-  <button class="gear-btn" id="gear-btn" title="Settings">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="3"/>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-    </svg>
-  </button>
-
   <!-- Settings panel -->
   <div class="settings-panel" id="settings-panel">
     <div class="sp-lbl">Color</div>
@@ -341,6 +357,8 @@ body{
       <button class="sp-size-btn on" data-sz="medium">M<span class="sp-size-sub">medium</span></button>
       <button class="sp-size-btn"    data-sz="small">S<span class="sp-size-sub">small</span></button>
     </div>
+    <div class="sp-div"></div>
+    <button class="sp-save-btn" id="save-btn">⬇ Save my version</button>
   </div>
 
 </div><!-- .shell -->
@@ -485,7 +503,10 @@ const SCALES  = { large: 1.0, medium: 0.78, small: 0.58 };
 const SHELL_W = 300;
 const SHELL_H = 320;
 
+let currentSz = 'medium';
+
 function applySize(key) {
+  currentSz = key;
   const s = SCALES[key];
   shellEl.style.transform = `scale(${s})`;
   sizerEl.style.width  = (SHELL_W * s) + 'px';
@@ -500,6 +521,35 @@ document.querySelectorAll('.sp-size-btn').forEach(btn => {
 /* ── INIT ── */
 applySize('medium');
 loadRates();
+
+/* ── SAVE TO FILE ── */
+document.getElementById('save-btn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  const theme      = document.documentElement.getAttribute('data-theme') || '';
+  const size       = currentSz;
+  const customHex  = cpickSwatch.classList.contains('on') ? cpick.value : null;
+  const bootScript = `<script>
+(function(){
+  var t='${theme}', s='${size}', hex=${JSON.stringify(customHex)};
+  if(t) document.documentElement.setAttribute('data-theme', t);
+  document.addEventListener('DOMContentLoaded', function(){
+    if(typeof applySize==='function') applySize(s);
+    if(hex && typeof applyCustomColor==='function'){ applyCustomColor(hex); document.getElementById('cpick-swatch').classList.add('on'); document.getElementById('cpick').value=hex; }
+    document.querySelectorAll('.sp-sw').forEach(function(d){ d.classList.toggle('on', !hex && d.dataset.t===t); });
+    document.querySelectorAll('.sp-size-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.sz===s); });
+  });
+})();
+<\/script>`;
+  let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  html = html.replace('<head>', '<head>' + bootScript);
+  const blob = new Blob([html], { type: 'text/html' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'currency-converter.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  closeGear();
+});
 </script>
 </body>
 </html>
