@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Elorah Calc Pro</title>
+<title>Cloverleaf Calc Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -365,7 +365,16 @@ body{
 }
 .sp-size-btn:hover{background:rgba(0,0,0,.07); color:#999;}
 .sp-size-btn.on{background:rgba(0,0,0,.08); color:#777; border-color:rgba(0,0,0,.2);}
-.sp-size-sub{font-size:7px; font-weight:400; opacity:.6; letter-spacing:0;}</style>
+.sp-size-sub{font-size:7px; font-weight:400; opacity:.6; letter-spacing:0;}
+.sp-save-btn{
+  display:block; width:100%; margin-top:10px; padding:7px 0;
+  border-radius:10px; border:none; background:rgba(0,0,0,0.06);
+  font-family:'Nunito',sans-serif; font-size:9px; font-weight:800;
+  letter-spacing:2px; text-transform:uppercase; color:#999;
+  cursor:pointer; transition:background .15s, color .15s;
+}
+.sp-save-btn:hover{background:rgba(0,0,0,.11); color:#555;}
+.sp-save-btn:active{transform:translateY(1px);}</style>
 </head>
 <body>
 <div class="page">
@@ -497,7 +506,7 @@ body{
     <div class="fx-rate-note" id="fx-note">Rates updated on load · May vary slightly</div>
   </div>
 
-  <div class="brand"></div>
+  <div class="brand">♡ Elorah ♡</div>
 
   <!-- Gear button -->
   <button class="gear-btn" id="gear-btn" title="Settings">
@@ -525,6 +534,8 @@ body{
       <button class="sp-size-btn on" data-sz="medium">M<span class="sp-size-sub">medium</span></button>
       <button class="sp-size-btn"    data-sz="small">S<span class="sp-size-sub">small</span></button>
     </div>
+    <div class="sp-div"></div>
+    <button class="sp-save-btn" id="save-btn">⬇ Save my version</button>
   </div>
 </div><!-- .calc -->
 </div><!-- .calc-sizer -->
@@ -807,10 +818,10 @@ document.querySelectorAll('.sp-sw').forEach(sw=>{
    The sizer div's width/height matches the scaled footprint
    so the flexbox body can re-center correctly.              */
 const sizerEl = document.getElementById('calc-sizer');
-
 const SCALES = { large: 1.0, medium: 0.75, small: 0.55 };
-const CALC_W  = 320;   /* calc's natural width  */
-const CALC_H  = 620;   /* calc's approximate natural height (std mode) */
+const CALC_W  = 320;
+const CALC_H  = 620;
+let currentSz = 'medium';
 
 function applySize(key){
   currentSz = key;
@@ -833,6 +844,33 @@ document.querySelectorAll('.sp-size-btn').forEach(btn=>{
 });
 
 loadRates();
+
+/* ── SAVE TO FILE ── */
+document.getElementById('save-btn').addEventListener('click', function(e){
+  e.stopPropagation();
+  const theme = document.documentElement.getAttribute('data-theme') || '';
+  const size  = currentSz;
+  const bootScript = `<script>
+(function(){
+  var t='${theme}', s='${size}';
+  document.documentElement.setAttribute('data-theme', t);
+  document.addEventListener('DOMContentLoaded', function(){
+    if(typeof applySize==='function') applySize(s);
+    document.querySelectorAll('.sp-sw').forEach(function(d){ d.classList.toggle('on', d.dataset.t===t); });
+    document.querySelectorAll('.sp-size-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.sz===s); });
+  });
+})();
+<\/script>`;
+  let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  html = html.replace('<head>', '<head>' + bootScript);
+  const blob = new Blob([html], { type: 'text/html' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'AdvancedCalculator.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  closeGear();
+});
 </script>
 </body>
 </html>
